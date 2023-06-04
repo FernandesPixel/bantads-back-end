@@ -12,11 +12,12 @@ public class CustomerMapper {
     private AddressMapper addressMapper;
 
     public CustomerDTO customerToDTO(Customer customer) {
-        return new CustomerDTO(customer.getName(), customer.getEmail(), customer.getCpf(), addressMapper.addressToDTO(customer.getAddress()));
+        return new CustomerDTO(customer.getId(), customer.getName(), customer.getEmail(), customer.getCpf(), addressMapper.addressToDTO(customer.getAddress()));
     }
 
     public Customer DTOToCustomer(CustomerDTO customerDTO) {
         return Customer.builder()
+                .id(customerDTO.id())
                 .name(customerDTO.name())
                 .email(customerDTO.email())
                 .cpf(customerDTO.cpf())

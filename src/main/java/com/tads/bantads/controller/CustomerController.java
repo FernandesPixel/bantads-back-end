@@ -4,10 +4,10 @@ import com.tads.bantads.dto.CustomerDTO;
 import com.tads.bantads.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/customer")
@@ -19,5 +19,14 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO){
         return ResponseEntity.ok().body(customerService.createCustomer(customerDTO));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable UUID id){
+        Optional<CustomerDTO> customer = customerService.getCustomer(id);
+        if(customer.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(customer.get());
     }
 }

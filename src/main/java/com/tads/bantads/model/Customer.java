@@ -17,14 +17,15 @@ public class Customer{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column
+    @Column(nullable = false)
     private String name;
-    @Column
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column
+    @Column(nullable = false, unique = true)
     private String cpf;
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(nullable = false, name = "address_id")
     private Address address;
+    @Column(unique = true)
     private UUID account;
 }

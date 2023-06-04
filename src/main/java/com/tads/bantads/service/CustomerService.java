@@ -7,7 +7,7 @@ import com.tads.bantads.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -26,10 +26,9 @@ public class CustomerService {
         return customerMapper.customerToDTO(customerRepository.saveAndFlush(customer));
     }
 
-    public Optional<CustomerDTO> getCustomer(UUID id) {
-        return customerRepository.findById(id)
-                .stream()
-                .findFirst()
-                .map(customerMapper::customerToDTO);
+    public CustomerDTO getCustomer(UUID id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        return customerMapper.customerToDTO(customer);
     }
 }

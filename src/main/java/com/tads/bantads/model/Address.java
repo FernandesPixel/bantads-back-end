@@ -17,18 +17,17 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column
+    @Column(nullable = false)
     private String cep;
-    @Column
+    @Column(nullable = false)
     private String street;
-    @Column
+    @Column(nullable = false)
     private String number;
-    @Column
+    @Column(nullable = false)
     private String neighborhood;
-    @Column
+    @Column(nullable = false)
     private String city;
-    @Column
+    @Column(nullable = false)
     private String state;
-    @Column
     private String complement;
 }

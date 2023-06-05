@@ -56,4 +56,8 @@ public class CustomerService {
         addressService.saveAddress(customer.getAddress());
         return customerMapper.customerToDTO(customerRepository.saveAndFlush(customer));
     }
+
+    public void deleteCustomer(UUID id) {
+        customerRepository.deleteById(id);
+    }
 }

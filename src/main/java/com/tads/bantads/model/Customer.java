@@ -23,7 +23,7 @@ public class Customer{
     private String email;
     @Column(nullable = false, unique = true)
     private String cpf;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false, name = "address_id")
     private Address address;
     @Column(unique = true)

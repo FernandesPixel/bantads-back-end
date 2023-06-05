@@ -22,8 +22,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/customer")
 public class CustomerController {
 
-    private static final String messageGet = "Get a customer";
-    private static final String messageUpdate = "Update a customer";
+    private static final String messageGet = "Get customer";
+    private static final String messageUpdate = "Update customer";
+    private static final String messageDelete = "Delete customer";
 
     @Autowired
     private CustomerService customerService;
@@ -37,13 +38,21 @@ public class CustomerController {
         customerResource.add(linkTo(methodOn(CustomerController.class).getCustomer(createdCustomer.id())).withSelfRel().withTitle(messageGet));
         customerResource.add(linkTo(methodOn(CustomerController.class).updateCustomer(createdCustomer.id(),
                 new UpdateCustomerDTO(createdCustomer.name(), createdCustomer.email(), createdCustomer.address()))).withSelfRel().withTitle(messageUpdate));
+        customerResource.add(linkTo(methodOn(CustomerController.class).deleteCustomer(createdCustomer.id())).withSelfRel().withTitle(messageDelete));
 
         return ResponseEntity.created(URI.create(customerResource.getRequiredLink(IanaLinkRelations.SELF).getHref())).body(customerResource);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(customerService.getCustomer(id));
+    public ResponseEntity<EntityModel<CustomerDTO>> getCustomer(@PathVariable UUID id) {
+        CustomerDTO customer = customerService.getCustomer(id);
+
+        EntityModel<CustomerDTO> customerResource = EntityModel.of(customer);
+        customerResource.add(linkTo(methodOn(CustomerController.class).updateCustomer(customer.id(),
+                new UpdateCustomerDTO(customer.name(), customer.email(), customer.address()))).withSelfRel().withTitle(messageUpdate));
+        customerResource.add(linkTo(methodOn(CustomerController.class).deleteCustomer(customer.id())).withSelfRel().withTitle(messageDelete));
+
+        return ResponseEntity.ok(customerResource);
     }
 
     @GetMapping
@@ -53,11 +62,20 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<EntityModel<CustomerDTO>> updateCustomer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerDTO updateCustomerDTO) {
         CustomerDTO updatedCustomer = customerService.updateCustomer(id, updateCustomerDTO);
         EntityModel<CustomerDTO> customerResource = EntityModel.of(updatedCustomer);
         customerResource.add(linkTo(methodOn(CustomerController.class).getCustomer(updatedCustomer.id())).withSelfRel().withTitle(messageGet));
+        customerResource.add(linkTo(methodOn(CustomerController.class).deleteCustomer(updatedCustomer.id())).withSelfRel().withTitle(messageDelete));
 
         return ResponseEntity.ok(customerResource);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> deleteCustomer(@PathVariable UUID id){
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 }

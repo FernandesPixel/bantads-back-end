@@ -1,6 +1,7 @@
 package com.tads.bantads.mapper;
 
 import com.tads.bantads.dto.CustomerDTO;
+import com.tads.bantads.dto.UpdateCustomerDTO;
 import com.tads.bantads.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,5 +24,12 @@ public class CustomerMapper {
                 .cpf(customerDTO.cpf())
                 .address(addressMapper.DTOToAddress(customerDTO.address()))
                 .build();
+    }
+
+    public Customer updateCustomer(Customer customer, UpdateCustomerDTO updateCustomerDTO) {
+        customer.setName(updateCustomerDTO.name());
+        customer.setEmail(updateCustomerDTO.email());
+        customer.setAddress(addressMapper.DTOToAddress(updateCustomerDTO.address()));
+        return customer;
     }
 }
